@@ -53,8 +53,12 @@ const App = () => {
       });
       setTodos(newTodos);
     },
-    [todos,newTodo]
+    [todos, newTodo]
   );
+
+  const removeTodo = (todo) => (event) => {
+    console.log("remove todo", todo.content)
+  }
 
   return (
     <div>
@@ -78,6 +82,7 @@ const App = () => {
               onChange={addTodo(todo, index)}
             />
             <span className={todo.done ? "done" : ""}> {todo.content}</span>
+            <button onClick={removeTodo(todo)}>Remove Todo</button>
           </li>
         ))}
       </ul>
