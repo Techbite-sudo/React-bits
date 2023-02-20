@@ -20,24 +20,41 @@ const App = () => {
   const onNewTodoChange = useCallback((event) => {
     console.log(event.target.value);
     setNewTodo(event.target.value);
-  },[]);
+  }, []);
 
-  const formSubmitted = useCallback((event) => {
-    event.preventDefault();
-    setTodos([
-      ...todos,
-      {
-        id: todos.length + 1,
-        content: newTodo,
-        done: false,
-      },
-    ]);
-    setNewTodo("");
-  }, [newTodo, todos]);
+  const formSubmitted = useCallback(
+    (event) => {
+      event.preventDefault();
+      if (!newTodo.trim()) return;
+      setTodos([
+        ...todos,
+        {
+          id: todos.length + 1,
+          content: newTodo,
+          done: false,
+        },
+      ]);
+      setNewTodo("");
+    },
+    [newTodo, todos]
+  );
 
   useEffect(() => {
     console.log("todo", todos);
   }, [todos]);
+
+  const addTodo = useCallback(
+    (todo, index) => (event) => {
+      console.log(event.target.checked);
+      const newTodos = [...todos];
+      newTodo.splice(index, 1, {
+        ...todo,
+        done: !todo.done,
+      });
+      setTodos(newTodos);
+    },
+    [todos,newTodo]
+  );
 
   return (
     <div>
@@ -53,11 +70,16 @@ const App = () => {
         <button>Add Todo</button>
       </form>
       <ul>
-        {
-          todos.map((todo) => (
-            <li>{todo.content}</li>
-          ))
-        }
+        {todos.map((todo, index) => (
+          <li key={todo.id}>
+            <input
+              checked={todo.done}
+              type="checkbox"
+              onChange={addTodo(todo, index)}
+            />
+            <span className={todo.done ? "done" : ""}> {todo.content}</span>
+          </li>
+        ))}
       </ul>
     </div>
   );
