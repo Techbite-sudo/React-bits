@@ -27,12 +27,12 @@ const App = () => {
       event.preventDefault();
       if (!newTodo.trim()) return;
       setTodos([
-        ...todos,
         {
-          id: todos.length + 1,
+          id: todos.length ? todos[0].id + 1 : 1,
           content: newTodo,
           done: false,
         },
+        ...todos,
       ]);
       setNewTodo("");
     },
@@ -56,9 +56,12 @@ const App = () => {
     [todos, newTodo]
   );
 
-  const removeTodo = (todo) => (event) => {
-    console.log("remove todo", todo.content)
-  }
+  const removeTodo = useCallback(
+    (todo) => (event) => {
+      setTodos(todos.filter((otherTodo) => otherTodo !== todo));
+    },
+    [todos]
+  );
 
   return (
     <div>
